@@ -6,7 +6,8 @@ const PaintingSchema  = new Schema ({
     image: String,
     title: {type: String, required: true},
     description: String,
-    creator: String, //ID
+    creator: String, //ID,
+    creatorUsername: String,
     game: {type: String, enum: ["Legends of the Old West", "Warhammer Fantasy", "Warhammer 40k"]},
     tags: [String],
 },{

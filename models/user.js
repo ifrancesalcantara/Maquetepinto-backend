@@ -7,8 +7,9 @@ const userSchema  = new Schema ({
     paintings: [{type: String, ref: "Painting"}], //Must be an ID
     delivers: Boolean,
     mounts: Boolean,
-    profilePic: String,
-    techniques: [String]
+    image: String,
+    techniques: [String],
+    password: {type: String, required: true}
 },{
     timestamps: { createdAt: "created_at" }
   })

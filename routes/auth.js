@@ -4,6 +4,7 @@ const createError = require('http-errors');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const User = require('../models/user');
+const parser = require('./../config/cloudinary');
 
 // HELPER FUNCTIONS
 const {
@@ -12,11 +13,20 @@ const {
   validationLoggin,
 } = require('../helpers/middlewares');
 
+// upload Image
+router.post('/signup/image', parser.single('photo'), (req, res, next) => {
+  console.log('file upload');
+  if (!req.file) {
+    next(new Error('No file uploaded!'));
+  };
+  const imageUrl = req.file.secure_url;
+  res.json(imageUrl).status(200);
+});
 
 // POST '/auth/signup'
 router.post('/signup', isNotLoggedIn, validationLoggin, async (req, res, next) => {
-
-  const { username, password } = req.body;
+  console.log("Backend: trying to signup with: ",req.body)
+  const { username, password, image } = req.body;
   
   try {
     const usernameExists = await User.findOne({ username }, 'username');
@@ -28,7 +38,7 @@ router.post('/signup', isNotLoggedIn, validationLoggin, async (req, res, next) =
       const salt = bcrypt.genSaltSync(saltRounds);
       const hashPass = bcrypt.hashSync(password, salt);
 
-      const newUser = await User.create({ username, password: hashPass });
+      const newUser = await User.create({ username, password: hashPass, image });
       req.session.currentUser = newUser;
 
       res
@@ -49,12 +59,12 @@ router.post('/signup', isNotLoggedIn, validationLoggin, async (req, res, next) =
 router.post('/login', isNotLoggedIn, validationLoggin, async (req, res, next) => {
   
     const { username, password } = req.body;
-    
+
     try {
-      const user = await User.findOne({ username });
-      
+      const user = await User.findOne({ username }).then(user=>user)
+      console.log(user)
       if (!user) {
-        next(createError(404)); // Not found
+        next(createError(404, "User not found")); // Not found
       }
       else if ( bcrypt.compareSync(password, user.password ) ) {
         req.session.currentUser = user;
@@ -87,10 +97,16 @@ router.post('/logout', isLoggedIn, (req, res, next) => {
 // // GET '/auth/me'
 router.get('/me', isLoggedIn, (req, res, next) => {
   //Doesn't really change object
+  User.findById(req.session.currentUser._id)
+    .populate("paintings")
+    .then(user=>{ //!!! password
+      res
+        .status(200)
+        .json(user)
+    })
+    .catch(err=>console.log(err))
   req.session.currentUser.password = "*";
-  res
-    .status(200)
-    .json(req.session.currentUser)
+  // User.findById()
 })
 // //  - check if the user IS logged in using helper function (check if session exists)
 // //  - if yes, send the response with user info (available on req.session.currentUser)
