@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const ChatRoomSchema = new Schema({
   roomId: String, //!!!ID
-  comments: [String] //!!!ID
+  comments: [{type: Schema.Types.ObjectId, ref: "ChatComment"}] //!!!ID
 });
 
 const ChatRoom = mongoose.model("ChatRoom", ChatRoomSchema);
