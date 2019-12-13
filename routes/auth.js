@@ -25,22 +25,21 @@ router.post('/signup/image', parser.single('photo'), (req, res, next) => {
 
 // POST '/auth/signup'
 router.post('/signup', isNotLoggedIn, validationLoggin, async (req, res, next) => {
-  console.log("Backend: trying to signup with: ",req.body)
   const { username, password, image } = req.body;
   
   try {
     const usernameExists = await User.findOne({ username }, 'username');
-
+    
     if (usernameExists)  {
       return next(createError(400, "Username already exists"));
     }
     else {
       const salt = bcrypt.genSaltSync(saltRounds);
       const hashPass = bcrypt.hashSync(password, salt);
-
+      
       const newUser = await User.create({ username, password: hashPass, image });
       req.session.currentUser = newUser;
-
+      console.log(newUser)
       res
         .status(201)      // Created
         .json(newUser);               // res.send( JSON.stringify(newUser) )

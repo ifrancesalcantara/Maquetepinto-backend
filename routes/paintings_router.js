@@ -99,6 +99,21 @@ router.get("/user/:userId", function(req, res, next) {
     });
 });
 
+
+router.delete("/:paintingId", function(req, res, next) {
+    const { paintingId } = req.params;
+    Paintings.findByIdAndDelete(paintingId)
+      .then(() => {
+        res.status(202);
+        return;
+      })
+      .catch(err => {
+        res.status();
+        console.log(err);
+      });
+  });
+
+
 router.delete("/admin", function(req, res, next) {
   const { key, value } = req.body;
   Paintings.find({ [key]: value })
