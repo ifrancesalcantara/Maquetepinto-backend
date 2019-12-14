@@ -1,32 +1,124 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const User = require("../models/user")
+const User = require("../models/user");
+const Paintings = require("../models/painting");
+const Likes = require("../models/like");
 
 /* GET users listing. */
 
-router.get('/:userId', function(req, res, next) {
-    const { userId } = req.params
-    User.findById(userId)
-        .populate("paintings")
-        .then( (user) => {
-            res.status(202).json(user)
-            return;
-        })
-        .catch( (err) => {
-            res.status(500).json(err)
-            console.log(err)});
+router.get("/:userId", function(req, res, next) {
+  const { userId } = req.params;
+  User.findById(userId)
+    .populate("paintings")
+    .then(user => {
+      res.status(202).json(user);
+      return;
+    })
+    .catch(err => {
+      res.status(500).json(err);
+      console.log(err);
+    });
 });
 
-
-router.get('/', function(req, res, next) {
+router.get("/", function(req, res, next) {
   User.find()
-  .then( (allUsers) => {
-    res.status(202).json(allUsers)
-    return;
-  })
-  .catch( (err) => {
-    res.status(500).json(err)
-    console.log(err)});
+    .then(allUsers => {
+      res.status(202).json(allUsers);
+      return;
+    })
+    .catch(err => {
+      res.status(500).json(err);
+      console.log(err);
+    });
+});
+
+router.patch("/handle-like/:instruction/:userId/:paintingId", function(
+  req,
+  res,
+  next
+) {
+  const { instruction, userId, paintingId } = req.params;
+  if (instruction === "like") {
+    User.findByIdAndUpdate(
+      userId,
+      { $push: { likedPaintings: paintingId } },
+      { new: true }
+    )
+      .then(updatedUser => {
+        Paintings.findByIdAndUpdate(
+          paintingId,
+          { $push: { usersWhoLiked: userId } },
+          { new: true }
+        )
+          .then(updatedPainting => {
+            Likes.create({ userWhoLiked: userId, paintingLiked: paintingId })
+              .then(like => {
+                Paintings.findByIdAndUpdate(
+                  paintingId,
+                  { $push: { likes: like._id } },
+                  { new: true }
+                )
+                  .then(updatedPainting => {
+                    console.log("updatedPainting", updatedPainting);
+                  })
+                  .catch(err => console.log(err));
+                console.log("like: ", like);
+              })
+              .catch(err => console.log(err));
+          })
+          .catch(err => console.log(err));
+        res.status(202).json(updatedUser);
+        return;
+      })
+      .catch(err => {
+        res.status(500).json(err);
+        console.log(err);
+      });
+  } else if (instruction === "unlike") {
+    User.findByIdAndUpdate(
+      userId,
+      { $pull: { likedPaintings: paintingId } },
+      { new: true }
+    )
+      .then(updatedUser => {
+        Paintings.findByIdAndUpdate(
+          paintingId,
+          { $pull: { usersWhoLiked: userId } },
+          { new: true }
+        )
+          .populate("likes")
+          .then(updatedPainting => {
+            updatedPainting.likes.forEach(like => {
+              if (like.userWhoLiked == userId) {
+                Likes.findByIdAndDelete(like._id).catch(err =>
+                  console.log(err)
+                );
+                Paintings.findByIdAndUpdate(
+                  paintingId,
+                  { $pull: { likes: like._id } },
+                  { new: true }
+                )
+                  .then(updatedPainting2 =>
+                    console.log(
+                      "2: updatedPainting without mu id in likedUsers and the like Id in likes, ",
+                      like._id,
+                      ": ",
+                      updatedPainting2
+                    )
+                  )
+                  .catch(err => console.log(err));
+              }
+            });
+          })
+          .catch(err => console.log(err));
+        res.status(202).json(updatedUser);
+        return;
+      })
+      .catch(err => {
+        res.status(500).json(err);
+        console.log(err);
+      });
+  }
 });
 
 module.exports = router;

@@ -9,7 +9,8 @@ const userSchema  = new Schema ({
     mounts: Boolean,
     image: String,
     techniques: [String],
-    password: {type: String, required: true}
+    password: {type: String, required: true}, 
+    likedPaintings: [Schema.Types.ObjectId]
 },{
     timestamps: { createdAt: "created_at" }
   })

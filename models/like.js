@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const LikeSchema = new Schema({
-  userWhoLiked: [Schema.Types.ObjectId]
+  userWhoLiked: Schema.Types.ObjectId,
+  paintingLiked: Schema.Types.ObjectId
 }, {
     timestamps: { createdAt: "created_at"}
 });
