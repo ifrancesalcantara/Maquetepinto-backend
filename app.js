@@ -17,13 +17,16 @@ const chatRouter = require('./routes/chat_router');
 
 // MONGOOSE CONNECTION
 mongoose
-  .connect(process.env.MONGODB_URI, {
+  .connect("mongodb://localhost:27017/project3", {
+    // process.env.MONGODB_URI, {
     keepAlive: true,
     useNewUrlParser: true,
     reconnectTries: Number.MAX_VALUE,
   })
   .then( (x) => console.log(`Connected to database ${x.connections[0].name}`))
-  .catch( (err) => console.error(err));
+  .catch( (err) => {
+    console.log("THE ERROR IS HEREEEEE")
+    console.error(err)});
 
 
 // EXPRESS SERVER INSTANCE

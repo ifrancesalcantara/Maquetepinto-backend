@@ -46,9 +46,9 @@ router.get("/", function(req, res, next) {
   if (req.query) {
     const { tag, game, title, sort } = req.query;
     if (tag) {
-      Paintings.find({ tags: { "$in" : [tag]} } )
+      Paintings.find({ tags: { $in: [tag] } })
         .then(filteredPaintings => {
-            console.log(filteredPaintings)
+          console.log(filteredPaintings);
           res.status(202).json(filteredPaintings);
           return;
         })
@@ -57,7 +57,6 @@ router.get("/", function(req, res, next) {
           console.log(err);
         });
     } else if (game) {
-      console.log("game filtering");
       Paintings.find({ game: game })
         .then(filteredPaintings => {
           res.status(202).json(filteredPaintings);
@@ -68,39 +67,61 @@ router.get("/", function(req, res, next) {
           console.log(err);
         });
     } else if (title) {
-        Paintings.find({ title: title })
-          .then(filteredPaintings => {
-            res.status(202).json(filteredPaintings);
+      Paintings.find({ title: title })
+        .then(filteredPaintings => {
+          res.status(202).json(filteredPaintings);
+          return;
+        })
+        .catch(err => {
+          res.status();
+          console.log(err);
+        });
+    } else if (sort) {
+      if (sort == "newest") {
+        Paintings.find()
+          .sort({ created_at: -1 })
+          .then(sortedPaintings => {
+            res.status(202).json(sortedPaintings);
             return;
           })
           .catch(err => {
             res.status();
             console.log(err);
           });
-    } else if(sort) {
-        if (sort=="newest"){
-            Paintings.find()
-            .sort({created_at: -1})
-            .then(sortedPaintings => {
-              res.status(202).json(sortedPaintings);
-              return;
-            })
-            .catch(err => {
-              res.status();
-              console.log(err);
-            });
-        } else         if (sort=="oldest"){
-            Paintings.find()
-            .sort({created_at: 1})
-            .then(sortedPaintings => {
-              res.status(202).json(sortedPaintings);
-              return;
-            })
-            .catch(err => {
-              res.status();
-              console.log(err);
-            });
-        }
+      } else if (sort == "oldest") {
+        Paintings.find()
+          .sort({ created_at: 1 })
+          .then(sortedPaintings => {
+            res.status(202).json(sortedPaintings);
+            return;
+          })
+          .catch(err => {
+            res.status();
+            console.log(err);
+          });
+      }  else if (sort == "most-liked") {
+        Paintings.find()
+          .sort({ likes: -1 })
+          .then(sortedPaintings => {
+            res.status(202).json(sortedPaintings);
+            return;
+          })
+          .catch(err => {
+            res.status();
+            console.log(err);
+          });
+      }  else if (sort == "most-seen") {
+        Paintings.find()
+          .sort({ timesSeen: -1 })
+          .then(sortedPaintings => {
+            res.status(202).json(sortedPaintings);
+            return;
+          })
+          .catch(err => {
+            res.status();
+            console.log(err);
+          });
+      }
     }
   } else {
     Paintings.find()

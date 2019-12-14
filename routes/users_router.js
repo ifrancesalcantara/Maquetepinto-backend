@@ -121,4 +121,21 @@ router.patch("/handle-like/:instruction/:userId/:paintingId", function(
   }
 });
 
+router.patch("/add-seen/:paintingId", function(req, res, next) {
+  const { paintingId } = req.params;
+  Paintings.findById(paintingId)
+  .then(painting=>{
+    Paintings.findByIdAndUpdate(paintingId, {timesSeen: painting.timesSeen+1}, {new:true})
+      .then(updatedPainting => {
+        res.status(202).json(updatedPainting);
+        return;
+      })
+      .catch(err => {
+        res.status(500).json(err);
+        console.log(err);
+      });
+
+  })
+});
+
 module.exports = router;
