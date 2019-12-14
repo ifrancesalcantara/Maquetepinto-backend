@@ -43,15 +43,76 @@ router.post("/", upload.single("photo"), function(req, res, next) {
 });
 
 router.get("/", function(req, res, next) {
-  Paintings.find()
-    .then(allPaintings => {
-      res.status(202).json(allPaintings);
-      return;
-    })
-    .catch(err => {
-      res.status();
-      console.log(err);
-    });
+  if (req.query) {
+    const { tag, game, title, sort } = req.query;
+    if (tag) {
+      Paintings.find({ tags: { "$in" : [tag]} } )
+        .then(filteredPaintings => {
+            console.log(filteredPaintings)
+          res.status(202).json(filteredPaintings);
+          return;
+        })
+        .catch(err => {
+          res.status();
+          console.log(err);
+        });
+    } else if (game) {
+      console.log("game filtering");
+      Paintings.find({ game: game })
+        .then(filteredPaintings => {
+          res.status(202).json(filteredPaintings);
+          return;
+        })
+        .catch(err => {
+          res.status();
+          console.log(err);
+        });
+    } else if (title) {
+        Paintings.find({ title: title })
+          .then(filteredPaintings => {
+            res.status(202).json(filteredPaintings);
+            return;
+          })
+          .catch(err => {
+            res.status();
+            console.log(err);
+          });
+    } else if(sort) {
+        if (sort=="newest"){
+            Paintings.find()
+            .sort({created_at: -1})
+            .then(sortedPaintings => {
+              res.status(202).json(sortedPaintings);
+              return;
+            })
+            .catch(err => {
+              res.status();
+              console.log(err);
+            });
+        } else         if (sort=="oldest"){
+            Paintings.find()
+            .sort({created_at: 1})
+            .then(sortedPaintings => {
+              res.status(202).json(sortedPaintings);
+              return;
+            })
+            .catch(err => {
+              res.status();
+              console.log(err);
+            });
+        }
+    }
+  } else {
+    Paintings.find()
+      .then(allPaintings => {
+        res.status(202).json(allPaintings);
+        return;
+      })
+      .catch(err => {
+        res.status();
+        console.log(err);
+      });
+  }
 });
 
 router.get("/home", function(req, res, next) {
@@ -99,20 +160,32 @@ router.get("/user/:userId", function(req, res, next) {
     });
 });
 
-
 router.delete("/:paintingId", function(req, res, next) {
-    const { paintingId } = req.params;
-    Paintings.findByIdAndDelete(paintingId)
-      .then(() => {
-        res.status(202);
-        return;
-      })
-      .catch(err => {
-        res.status();
-        console.log(err);
-      });
-  });
+  const { paintingId } = req.params;
+  Paintings.findByIdAndDelete(paintingId)
+    .then(() => {
+      res.status(202);
+      return;
+    })
+    .catch(err => {
+      res.status(err.status);
+      console.log(err);
+    });
+});
 
+router.put("/:paintingId", function(req, res, next) {
+  const { paintingId } = req.params;
+  console.log("AAAAAAAA: ", paintingId);
+  Paintings.findByIdAndUpdate(paintingId, req.body, { new: true })
+    .then(updatedPainting => {
+      res.status(202).json(updatedPainting);
+      return;
+    })
+    .catch(err => {
+      res.status(err.status);
+      console.log(err);
+    });
+});
 
 router.delete("/admin", function(req, res, next) {
   const { key, value } = req.body;

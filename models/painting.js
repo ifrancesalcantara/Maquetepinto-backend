@@ -10,6 +10,8 @@ const PaintingSchema  = new Schema ({
     creatorUsername: String,
     game: {type: String, enum: ["Legends of the Old West", "Warhammer Fantasy", "Warhammer 40k"]},
     tags: [String],
+    usersWhoLiked: [Schema.Types.ObjectId],
+    likes: [{type:Schema.Types.ObjectId, ref: "Like"}]
 },{
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" }
   })
