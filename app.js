@@ -17,8 +17,7 @@ const chatRouter = require('./routes/chat_router');
 
 // MONGOOSE CONNECTION
 mongoose
-  .connect("mongodb://localhost:27017/project3", {
-    // process.env.MONGODB_URI, {
+  .connect(process.env.MONGODB_URI, {
     keepAlive: true,
     useNewUrlParser: true,
     reconnectTries: Number.MAX_VALUE,

@@ -13,15 +13,16 @@ router.get("/admin", async function(req, res, next) {
 
 router.post("/comment/:creatorId/:userId", async function(req, res, next) {
   const { creatorId, userId, newCommentData } = req.params;
-  console.log("REQ:BODYYYYYYYYYY: ", req.body)
+  console.log("REQ:BODYYYYYYYYYY: ", req.body);
   const newComment = await Comment.create(req.body)
     .then(newComment => {
-        // console.log(newComment)
-        return newComment})
+      // console.log(newComment)
+      return newComment;
+    })
     .catch(err => console.log(err));
 
   const chat1 = await Chat.findOne({ roomId: creatorId + userId })
-    .populate("comments")
+
     .then(chat => {
       if (chat) {
         return chat;
@@ -30,37 +31,43 @@ router.post("/comment/:creatorId/:userId", async function(req, res, next) {
     .catch(err => console.log(err));
 
   const chat2 = await Chat.findOne({ roomId: userId + creatorId })
-    .populate("comments")
+
     .then(chat => {
       if (chat) {
         return chat;
       }
     })
     .catch(err => console.log(err));
-    
+
   if (chat1) {
     const updatedChatRes = Chat.findByIdAndUpdate(
       chat1._id,
       { $push: { comments: newComment._id } },
       { new: true }
     )
-      .then(updatedChat => updatedChat)
-      .populate("comments");
+      .then(updatedChat =>
+        Chat.findById(updatedChat._id)
+          // .populate({
+          //   path: "comments",
+          //   options: { sort: { "createdAt": 1 } }
+          // })
+
+          .then(data => data)
+          .catch(err => console.log(err))
+      )
+      .catch(err => console.log(err));
 
     res.status(202).json(updatedChatRes);
     return;
-
-    
   } else if (chat2) {
     const updatedChatRes = Chat.findByIdAndUpdate(
       chat2._id,
       { $push: { comments: newComment._id } },
       { new: true }
-    )
-      .populate("comments")
-      .then(updatedChat => 
-        { console.log(updatedChat)
-            return updatedChat});
+    ).then(updatedChat => {
+      console.log(updatedChat);
+      return updatedChat;
+    });
     res.status(202).json(updatedChatRes);
     return;
   }
@@ -69,18 +76,24 @@ router.post("/comment/:creatorId/:userId", async function(req, res, next) {
 router.get("/:creatorId/:userId", async function(req, res, next) {
   const { creatorId, userId } = req.params;
   const chat1 = await Chat.findOne({ roomId: creatorId + userId })
-    .populate("comments")
+    .populate({ path: "comments", options: { sort: { "created_at": -1 } } })
+
     .then(chat => {
       if (chat) {
+        console.log("chat1", 
+        chat)
         return chat;
       }
     })
     .catch(err => console.log(err));
 
   const chat2 = await Chat.findOne({ roomId: userId + creatorId })
-    .populate("comments")
+    .populate({ path: "comments", options: { sort: { "created_at": -1 } } })
+
     .then(chat => {
       if (chat) {
+        console.log("chat2", 
+        chat)
         return chat;
       }
     })
