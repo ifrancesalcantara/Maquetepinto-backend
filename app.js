@@ -37,7 +37,7 @@ app.use(
   cors(
     {
     credentials: true,
-    origin: [process.env.PUBLIC_DOMAIN],
+    origin: [process.env.PUBLIC_DOMAIN, "https://paintapop.herokuapp.com"],
   }
   ),
 );
@@ -79,6 +79,11 @@ app.use("/users", usersRouter)
 app.use("/paintings", paintingsRouter)
 app.use("/chat", chatRouter)
 
+// ROUTE FOR SERVING REACT APP (index.html)
+app.use((req, res, next) => {
+  // If no routes match, send them the React HTML.
+  res.sendFile(__dirname + "/public/index.html");
+});
 
 // ERROR HANDLING
 // catch 404 and forward to error handler

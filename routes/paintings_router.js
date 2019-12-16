@@ -67,8 +67,10 @@ router.get("/", function(req, res, next) {
           console.log(err);
         });
     } else if (title) {
-      Paintings.find({ title: title })
+      console.log("title: ", title)
+      Paintings.find({ title: { "$regex": title, "$options": "i" } })
         .then(filteredPaintings => {
+          console.log(filteredPaintings)
           res.status(202).json(filteredPaintings);
           return;
         })
