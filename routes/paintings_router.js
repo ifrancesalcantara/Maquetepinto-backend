@@ -208,22 +208,6 @@ router.put("/:paintingId", function(req, res, next) {
     });
 });
 
-router.delete("/admin", function(req, res, next) {
-  const { key, value } = req.body;
-  Paintings.find({ [key]: value })
-    .then(paintingArr => {
-      paintingArr.forEach(painting => {
-        Paintings.findByIdAndDelete(painting._id).then(deletion => {
-          res.status(200).json(deletion);
-        });
-      });
-    })
-    .catch(err => {
-      res.status();
-      console.log(err);
-    });
-});
-
 router.delete("/admin/all", function(req, res, next) {
   Paintings.find({})
     .then(paintingArr => {
