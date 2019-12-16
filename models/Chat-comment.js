@@ -6,9 +6,10 @@ const ChatCommentSchema = new Schema({
   creatorId: String, //!!!ID
     commentText: String,
     commentImage: String
-},{
+  },{
     timestamps: { createdAt: "created_at" }
-  });
+  }
+);
 
 const ChatComment = mongoose.model("ChatComment", ChatCommentSchema);
 
