@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
-const Paintings = require("../models/painting");
-const Likes = require("../models/like");
+const Paintings = require("../models/Painting");
+const Likes = require("../models/Like");
 
 /* GET users listing. */
 
