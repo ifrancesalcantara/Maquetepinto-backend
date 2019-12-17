@@ -11,13 +11,14 @@ router.get("/chatrooms/:userId", async function(req, res, next) {
   const { userId } = req.params;
   const result = [];
   await User.findById(userId)
-    .populate({ path: "chats", populate: [{ path: "comments" }] })
-    .then(async userWithoutPopulatedComments => {
-      res.status(202).json(userWithoutPopulatedComments.chats);
+    .populate({ path: "chats"
+    , populate: [{ path: "comments" }] })
+    .then(async user => {
+      res.status(202).json(user.chats);
     })
     .catch(err => {
       res.status(500).json(err);
-      console.log(err);
+      console.log(err)
     });
 });
 
