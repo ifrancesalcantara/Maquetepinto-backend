@@ -6,11 +6,12 @@ const userSchema  = new Schema ({
     username: {type: String, required: true},
     paintings: [{type: String, ref: "Painting"}], //Must be an ID
     delivers: Boolean,
-    mounts: Boolean,
+    models: Boolean,
     image: String,
     techniques: [String],
     password: {type: String, required: true}, 
-    likedPaintings: [Schema.Types.ObjectId]
+    likedPaintings: [Schema.Types.ObjectId], 
+    chats: [{type: Schema.Types.ObjectId, ref: "ChatRoom"}]
 },{
     timestamps: { createdAt: "created_at" }
   })
