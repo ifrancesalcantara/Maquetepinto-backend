@@ -42,13 +42,13 @@ router.post("/", upload.single("photo"), function(req, res, next) {
     });
 });
 
+//!!! CLAN IT. NOT USING MOST PART
 router.get("/", function(req, res, next) {
   if (req.query) {
     const { tag, game, title, sort } = req.query;
     if (tag) {
       Paintings.find({ tags: { $in: [tag] } })
         .then(filteredPaintings => {
-          console.log(filteredPaintings);
           res.status(202).json(filteredPaintings);
           return;
         })
@@ -67,7 +67,7 @@ router.get("/", function(req, res, next) {
           console.log(err);
         });
     } else if (title) {
-      Paintings.find({ title: title })
+      Paintings.find({ title: { "$regex": title, "$options": "i" } })
         .then(filteredPaintings => {
           res.status(202).json(filteredPaintings);
           return;
@@ -150,7 +150,6 @@ router.get("/home", function(req, res, next) {
     })
     .catch(err => {
       res.status();
-      console.log("THERE WAS AN ERROR IN FIND BACKEND");
       console.log(err);
     });
 });

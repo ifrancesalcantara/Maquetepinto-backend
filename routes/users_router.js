@@ -3,8 +3,23 @@ const router = express.Router();
 const User = require("../models/user");
 const Paintings = require("../models/painting");
 const Likes = require("../models/like");
+const Chatrooms = require("../models/chatroom");
 
 /* GET users listing. */
+
+router.get("/chatrooms/:userId", async function(req, res, next) {
+  const { userId } = req.params;
+  const result = [];
+  await User.findById(userId)
+    .populate({ path: "chats", populate: [{ path: "comments" }] })
+    .then(async userWithoutPopulatedComments => {
+      res.status(202).json(userWithoutPopulatedComments.chats);
+    })
+    .catch(err => {
+      res.status(500).json(err);
+      console.log(err);
+    });
+});
 
 router.get("/:userId", function(req, res, next) {
   const { userId } = req.params;
@@ -123,9 +138,12 @@ router.patch("/handle-like/:instruction/:userId/:paintingId", function(
 
 router.patch("/add-seen/:paintingId", function(req, res, next) {
   const { paintingId } = req.params;
-  Paintings.findById(paintingId)
-  .then(painting=>{
-    Paintings.findByIdAndUpdate(paintingId, {timesSeen: painting.timesSeen+1}, {new:true})
+  Paintings.findById(paintingId).then(painting => {
+    Paintings.findByIdAndUpdate(
+      paintingId,
+      { timesSeen: painting.timesSeen + 1 },
+      { new: true }
+    )
       .then(updatedPainting => {
         res.status(202).json(updatedPainting);
         return;
@@ -134,8 +152,7 @@ router.patch("/add-seen/:paintingId", function(req, res, next) {
         res.status(500).json(err);
         console.log(err);
       });
-
-  })
+  });
 });
 
 module.exports = router;
