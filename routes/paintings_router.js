@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const Paintings = require("../models/painting");
-const User = require("../models/user");
-const parser = require("./../config/cloudinary");
+const Paintings = require("../models/Painting");
+const User = require("../models/User");
+const parser = require("./../config/Cloudinary");
 
 // /paintings/image
 router.post("/image", parser.single("photo"), (req, res, next) => {
