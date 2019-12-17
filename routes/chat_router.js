@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const Chat = require("../models/chatroom");
-const User = require("../models/user")
-const Comment = require("../models/chat-comment");
+const Chat = require("../models/Chatroom");
+const User = require("../models/User")
+const Comment = require("../models/Chat-comment");
 
 /* GET users listing. */
 

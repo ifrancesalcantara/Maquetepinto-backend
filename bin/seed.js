@@ -1,5 +1,5 @@
-const User = require("../models/user");
-const Painting = require("../models/painting");
+const User = require("../models/User");
+const Painting = require("../models/Painting");
 const mongoose = require("mongoose");
 const axios = require ("axios")
 

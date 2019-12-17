@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/user");
-const Paintings = require("../models/painting");
-const Likes = require("../models/like");
-const Chatrooms = require("../models/chatroom");
+const User = require("../models/User");
+const Paintings = require("../models/Painting");
+const Likes = require("../models/Like");
+const Chatrooms = require("../models/Chatroom");
 
 /* GET users listing. */
 
