@@ -3,7 +3,7 @@ const router = express.Router();
 const Paintings = require("../models/Painting");
 const User = require("../models/User");
 const multer = require("multer");
-const upload = multer({ dest: "./../public/images/uploads/" });
+//const upload = multer({ dest: "./../public/images/uploads/" });
 const parser = require("./../config/cloudinary");
 
 // /paintings/image
@@ -16,7 +16,7 @@ router.post("/image", parser.single("photo"), (req, res, next) => {
   res.json(imageUrl).status(200);
 });
 
-router.post("/", upload.single("photo"), function(req, res, next) {
+router.post("/", parser.single("photo"), function(req, res, next) {
   const { creator } = req.body;
   Paintings.create(req.body)
     .then(newPainting => {
