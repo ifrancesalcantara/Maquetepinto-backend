@@ -18,6 +18,8 @@ router.post("/image", parser.single("photo"), (req, res, next) => {
 
 router.post("/", parser.single("photo"), function(req, res, next) {
   const { creator } = req.body;
+  const imageUrl = req.file.secure_url;
+
   Paintings.create(req.body)
     .then(newPainting => {
       console.log(newPainting);
