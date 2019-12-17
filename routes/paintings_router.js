@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Paintings = require("../models/Painting");
 const User = require("../models/User");
-const parser = require("./../config/Cloudinary");
+const parser = require("./../config/cloudinary");
 
 // /paintings/image
 router.post("/image", parser.single("photo"), (req, res, next) => {
