@@ -15,7 +15,6 @@ const {
 
 // upload Image
 router.post('/signup/image', parser.single('photo'), (req, res, next) => {
-  console.log('file upload');
   if (!req.file) {
     next(new Error('No file uploaded!'));
   };
@@ -42,7 +41,7 @@ router.post('/signup', isNotLoggedIn, validationLoggin, async (req, res, next) =
       console.log(newUser)
       res
         .status(201)      // Created
-        .json(newUser);               // res.send( JSON.stringify(newUser) )
+        .json(newUser);
     }
 
 
