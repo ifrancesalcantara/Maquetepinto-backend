@@ -35,10 +35,10 @@ const app = express();
 // CORS MIDDLEWARE SETUP
 app.use(
   cors(
-    {
-    credentials: true,
-    origin: [process.env.PUBLIC_DOMAIN, "https://paintapop.herokuapp.com"],
-  }
+  //   {
+  //   credentials: true,
+  //   origin: [process.env.PUBLIC_DOMAIN, "https://paintapop.herokuapp.com"],
+  // }
   ),
 );
 // app.use((req, res, next) => {
