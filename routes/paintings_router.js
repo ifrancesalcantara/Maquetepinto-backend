@@ -160,8 +160,7 @@ router.get("/:paintingId", function(req, res, next) {
       return;
     })
     .catch(err => {
-      res.status();
-      console.log(err);
+      res.status(404, "Painting not found. It may have been deleted.").json(err)
     });
 });
 
