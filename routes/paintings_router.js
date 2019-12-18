@@ -99,9 +99,15 @@ router.get("/", function(req, res, next) {
           });
       }  else if (sort == "most-liked") {
         Paintings.find()
-          .sort({ likes: -1 })
           .then(sortedPaintings => {
-            res.status(202).json(sortedPaintings);
+            const reallySortedPaintings = sortedPaintings.sort((a, b)=>{
+              if(a.likes.length>b.likes.length) return-1
+              else return 1
+            })
+            reallySortedPaintings.forEach(p=>{
+              console.log(p.likes.length)
+            })
+            res.status(202).json(reallySortedPaintings);
             return;
           })
           .catch(err => {
