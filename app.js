@@ -23,7 +23,6 @@ mongoose
   })
   .then(x => console.log(`Connected to database ${x.connections[0].name}`))
   .catch(err => {
-    console.log("THE ERROR IS HEREEEEE");
     console.error(err);
   });
 

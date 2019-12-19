@@ -100,7 +100,7 @@ const seedPaintings = [
         "usersWhoLiked": [],
         "likes": [],
         "timesSeen": 27,
-        "title": "Cowboy Granda",
+        "title": "Grandad The Cowboy",
         "description": "A figure of an old man with a rifle.",
         "image": "https://res.cloudinary.com/da01q4tx3/image/upload/v1576514833/demo/pvkcnn03lekjhzfsgmcy.jpg",
         "creatorUsername": "user2",
