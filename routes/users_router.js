@@ -11,14 +11,13 @@ router.get("/chatrooms/:userId", async function(req, res, next) {
   const { userId } = req.params;
   const result = [];
   await User.findById(userId)
-    .populate({ path: "chats"
-    , populate: [{ path: "comments" }] })
+    .populate({ path: "chats", populate: [{ path: "comments" }] })
     .then(async user => {
       res.status(202).json(user.chats);
     })
     .catch(err => {
       res.status(500).json(err);
-      console.log(err)
+      console.log(err);
     });
 });
 
@@ -50,8 +49,7 @@ router.get("/", function(req, res, next) {
 
 router.patch("/handle-like/:instruction/:userId/:paintingId", function(
   req,
-  res,
-  next
+  res
 ) {
   const { instruction, userId, paintingId } = req.params;
   if (instruction === "like") {
@@ -75,7 +73,8 @@ router.patch("/handle-like/:instruction/:userId/:paintingId", function(
                   { new: true }
                 )
                   .then(updatedPainting => {
-                    console.log("updatedPainting", updatedPainting);
+                    // console.log("updatedPainting", updatedPainting);
+                    res.status(202).json(updatedPainting.usersWhoLiked);
                   })
                   .catch(err => console.log(err));
                 console.log("like: ", like);
@@ -83,7 +82,6 @@ router.patch("/handle-like/:instruction/:userId/:paintingId", function(
               .catch(err => console.log(err));
           })
           .catch(err => console.log(err));
-        res.status(202).json(updatedUser);
         return;
       })
       .catch(err => {
@@ -114,20 +112,19 @@ router.patch("/handle-like/:instruction/:userId/:paintingId", function(
                   { $pull: { likes: like._id } },
                   { new: true }
                 )
-                  .then(updatedPainting2 =>
-                    console.log(
-                      "2: updatedPainting without mu id in likedUsers and the like Id in likes, ",
-                      like._id,
-                      ": ",
-                      updatedPainting2
-                    )
-                  )
+                  .then(updatedPainting2 => {
+                    // console.log(
+                    //   "2: updatedPainting without mu id in likedUsers and the like Id in likes, ",
+                    //   like._id,
+                    //   ": ",
+                    //   updatedPainting2
+                    res.status(202).json(updatedPainting2.usersWhoLiked);
+                  })
                   .catch(err => console.log(err));
               }
             });
           })
           .catch(err => console.log(err));
-        res.status(202).json(updatedUser);
         return;
       })
       .catch(err => {

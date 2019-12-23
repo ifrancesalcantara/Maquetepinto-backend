@@ -42,7 +42,7 @@ router.post("/", function(req, res, next) {
 //!!! CLAN IT. NOT USING MOST PART
 router.get("/", function(req, res, next) {
   if (req.query) {
-    const { tag, game, title, sort } = req.query;
+    const { tag, game } = req.query;
     if (tag) {
       Paintings.find({ tags: { $in: [tag] } })
         .then(filteredPaintings => {
@@ -50,7 +50,7 @@ router.get("/", function(req, res, next) {
           return;
         })
         .catch(err => {
-          res.status();
+          res.status(404).json(err);
           console.log(err);
         });
     } else if (game) {
@@ -60,72 +60,9 @@ router.get("/", function(req, res, next) {
           return;
         })
         .catch(err => {
-          res.status();
+          res.status(404).json(err);
           console.log(err);
         });
-    } else if (title) {
-      Paintings.find({ title: { "$regex": title, "$options": "i" } })
-        .then(filteredPaintings => {
-          console.log(filteredPaintings)
-          res.status(202).json(filteredPaintings);
-          return;
-        })
-        .catch(err => {
-          res.status();
-          console.log(err);
-        });
-    } else if (sort) {
-      if (sort == "newest") {
-        Paintings.find()
-          .sort({ created_at: -1 })
-          .then(sortedPaintings => {
-            res.status(202).json(sortedPaintings);
-            return;
-          })
-          .catch(err => {
-            res.status();
-            console.log(err);
-          });
-      } else if (sort == "oldest") {
-        Paintings.find()
-          .sort({ created_at: 1 })
-          .then(sortedPaintings => {
-            res.status(202).json(sortedPaintings);
-            return;
-          })
-          .catch(err => {
-            res.status();
-            console.log(err);
-          });
-      }  else if (sort == "most-liked") {
-        Paintings.find()
-          .then(sortedPaintings => {
-            const reallySortedPaintings = sortedPaintings.sort((a, b)=>{
-              if(a.likes.length>b.likes.length) return-1
-              else return 1
-            })
-            reallySortedPaintings.forEach(p=>{
-              console.log(p.likes.length)
-            })
-            res.status(202).json(reallySortedPaintings);
-            return;
-          })
-          .catch(err => {
-            res.status();
-            console.log(err);
-          });
-      }  else if (sort == "most-seen") {
-        Paintings.find()
-          .sort({ timesSeen: -1 })
-          .then(sortedPaintings => {
-            res.status(202).json(sortedPaintings);
-            return;
-          })
-          .catch(err => {
-            res.status();
-            console.log(err);
-          });
-      }
     }
   } else {
     Paintings.find()
@@ -134,7 +71,7 @@ router.get("/", function(req, res, next) {
         return;
       })
       .catch(err => {
-        res.status();
+        res.status(404).json(err);
         console.log(err);
       });
   }
@@ -153,7 +90,7 @@ router.get("/home", function(req, res, next) {
       return;
     })
     .catch(err => {
-      res.status();
+      res.status(404).json(err);
       console.log(err);
     });
 });
@@ -166,7 +103,9 @@ router.get("/:paintingId", function(req, res, next) {
       return;
     })
     .catch(err => {
-      res.status(404, "Painting not found. It may have been deleted.").json(err)
+      res
+        .status(404, "Painting not found. It may have been deleted.")
+        .json(err);
     });
 });
 
@@ -178,7 +117,7 @@ router.get("/user/:userId", function(req, res, next) {
       return;
     })
     .catch(err => {
-      res.status();
+      res.status(404).json(err);
       console.log(err);
     });
 });
