@@ -1,3 +1,5 @@
+/*! https://mths.be/fromcodepoint v0.2.1 by @mathias */
+
 /*
 object-assign
 (c) Sindre Sorhus
@@ -30,6 +32,15 @@ object-assign
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+
+/*!
+ * The buffer module from node.js, for the browser.
+ *
+ * @author   Feross Aboukhadijeh <http://feross.org>
+ * @license  MIT
+ */
+
+/*! https://mths.be/jsesc v1.3.0 by @mathias */
 
 /*!
  * Determine if an object is a Buffer
